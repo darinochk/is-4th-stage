@@ -39,3 +39,11 @@ export async function loadAllPages<T>(
     };
     return await getPage(0, []);
 }
+
+export function DefaultErrorHandler(setError: (err: string) => void) {
+    return (err: any) => {
+        if (err.code == 403)
+            useUserStore.getState().Logout();
+        setError(err.response.data.message)
+    }
+}

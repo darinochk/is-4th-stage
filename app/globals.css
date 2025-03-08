@@ -6,6 +6,10 @@
     --color-orange: #f45725;
 
     --font-manrope: ;
+
+    --slow-transition: 800ms;
+    --medium-transition: 400ms;
+    --fast-transition: 200ms;
 }
 
 html,
