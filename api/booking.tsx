@@ -51,3 +51,27 @@ export async function DeleteBooking(id: number) {
         DefaultErrorHandler(() => {})(err);
     }
 }
+
+export async function GetBookingsByDesk(deskId: number): Promise<Booking[]> {
+    try {
+        const res = await api.get(`/bookings/desk/${deskId}`);
+        res.data = (res.data as Booking[]).map((booking: Booking) => (booking.startDate = new Date(booking.startDate), booking));
+        res.data = (res.data as Booking[]).map((booking: Booking) => (booking.endDate = new Date(booking.endDate), booking));
+        return res.data;
+    } catch (err: any) {
+        DefaultErrorHandler(() => {})(err);
+        return [];
+    }
+}
+
+export async function GetAdminBookings(): Promise<Booking[]> {
+    try {
+        const res = await api.get('/bookings/');
+        res.data = (res.data as Booking[]).map((booking: Booking) => (booking.startDate = new Date(booking.startDate), booking));
+        res.data = (res.data as Booking[]).map((booking: Booking) => (booking.endDate = new Date(booking.endDate), booking));
+        return res.data;
+    } catch (err: any) {
+        DefaultErrorHandler(() => {})(err);
+        return [];
+    }
+}

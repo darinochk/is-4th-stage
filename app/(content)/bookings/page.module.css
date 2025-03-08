@@ -1,0 +1,43 @@
+.title {
+    color: var(--color-blue);
+    text-align: center;
+    padding: 15px;
+}
+
+.title__container {
+    position: relative;
+}
+
+.title__container select {
+    margin-top: 15px;
+    padding: 10px;
+    border: 1px solid var(--color-blue);
+    border-radius: 15px;
+    width: 100%;
+    text-align: center;
+}
+
+.bookings__container {
+    padding: 15px;
+    display: flex;
+    gap: 15px;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.booking {
+    padding: 15px;
+    border: 1px solid var(--color-blue);
+    border-radius: 15px;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 5px 15px;
+}
+
+.booking > button {
+    grid-column: span 2;
+}
+
+.booking:nth-child(2n) {
+    border: 1px solid var(--color-orange);
+}
