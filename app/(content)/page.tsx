@@ -1,12 +1,14 @@
 'use client'
 import styles from "./page.module.css";
-import {FocusEventHandler, useState} from "react";
+import {FocusEventHandler, useEffect, useRef, useState} from "react";
 import {CreateDesk, Desk, GetDesks} from "@/api/desks";
 import {useAuthEffect} from "@/api/auth";
 import {useUserStore} from "@/context/user-store";
 import MessageComponent from "@/app/components/message";
 import Spinner from "@/app/components/spinner";
 import {Message} from "@/api/api";
+import {CreateBooking} from "@/api/booking";
+import {useRouter} from "next/navigation";
 
 export default function Home() {
     const [desks, setDesks] = useState<Desk[]>([]);
@@ -72,7 +74,8 @@ export default function Home() {
                     <MessageComponent message={response}/>
                     <div style={{display: 'flex', justifyContent: 'flex-end'}}>
                         <button className={styles.publish} disabled={requestSent}>{requestSent &&
-                            <Spinner size={30} style={{margin: "-11px 0 -11px -32px", paddingRight: "32px"}}/>}Добавить столик
+                            <Spinner size={30} style={{margin: "-11px 0 -11px -32px", paddingRight: "32px"}}/>}Добавить
+                            столик
                         </button>
                     </div>
                 </form>}
@@ -82,14 +85,58 @@ export default function Home() {
 }
 
 
-
 function DeskCard({card}: { card: Desk }) {
+    const dialogRef = useRef<HTMLDialogElement>(null);
+    const [response, setResponse] = useState<Message | null>(null)
+    const [requestSent, setRequestSent] = useState<boolean>(false);
+    const [startDate, setStartDate] = useState<string>(new Date().toISOString().substring(0, 10));
+    const router = useRouter();
+
+    useEffect(() => {
+        if (response?.isError === false)
+            router.push('/bookings')
+    }, [response]);
 
     return (
         <div>
             <h3>Столик номер: {card.deskNumber}</h3>
             <p>Вместимость: {card.capacity}</p>
             <p>Расположение: {card.location}</p>
+            <button onClick={() => {
+                dialogRef.current?.showModal();
+            }}>Забронировать
+            </button>
+            <dialog onClick={e => {
+                if ((e.target as HTMLElement).tagName === 'DIALOG' && e.target === e.currentTarget) dialogRef.current?.close()
+            }} ref={dialogRef}>
+                <form method='dialog'
+                      onSubmit={e => {
+                          e.preventDefault()
+                          CreateBooking(Object.fromEntries(new FormData(e.currentTarget)), setResponse)
+                      }}
+                >
+                    <h3>Бронирование столика {card.deskNumber}</h3>
+                    <input type='hidden' value={card.deskNumber} name='deskId'/>
+                    <input type='hidden' value='initial' name='status'/>
+                    <label>Дата начала:
+                        <input type="date" className={styles.text} onChange={e => setStartDate(e.currentTarget.value)}
+                               defaultValue={new Date().toISOString().substring(0, 10)}
+                               name="startDate" min={new Date().toISOString().substring(0, 10)} required/>
+                    </label>
+                    <label>Дата конца:
+                        <input type="date" className={styles.text}
+                               defaultValue={new Date().toISOString().substring(0, 10)}
+                               name="endDate" min={startDate} required/>
+                    </label>
+                    <MessageComponent message={response}/>
+                    <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+                        <button className={styles.publish} disabled={requestSent}>{requestSent &&
+                            <Spinner size={30} style={{margin: "-11px 0 -11px -32px", paddingRight: "32px"}}/>}
+                            Забронировать столик
+                        </button>
+                    </div>
+                </form>
+            </dialog>
         </div>
     )
 }

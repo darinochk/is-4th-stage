@@ -45,6 +45,6 @@ export function DefaultErrorHandler(setError: (err: Message) => void) {
         if (err.code == 403)
             useUserStore.getState().Logout();
         const message = err.response.data;
-        setError({isError: true, message: message});
+        setError({isError: true, message: JSON.stringify(message)});
     }
 }

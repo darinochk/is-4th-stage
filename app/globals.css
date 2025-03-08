@@ -57,3 +57,34 @@ h4 {
 h5 {
     font-size: x-small;
 }
+
+::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+    max-width: 100vw;
+}
+
+dialog {
+    position: absolute;
+    margin: auto;
+    width: 500px;
+    max-width: 90vw;
+    border-radius: 15px;
+    border: 1px solid var(--color-blue);
+    box-shadow: 1px 1px 5px 3px var(--color-blue);
+    min-width: 0;
+    height: min-content;
+    min-height: 0;
+    background: white;
+}
+
+@media screen and (max-width: 600px){
+    dialog {
+        min-width: 10vw;
+    }
+}
+
+@media screen and (max-width: 400px){
+    dialog {
+        max-width: 95vw;
+    }
+}
