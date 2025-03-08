@@ -9,6 +9,7 @@ import {useUserStore} from "@/context/user-store";
 import {EmailValidator, NameValidator, PasswordValidator, PhoneValidator} from "@/app/(auth)/login/validators";
 import {Message} from "@/api/api";
 import MessageComponent from "@/app/components/message";
+import Logo from "@/app/components/logo";
 
 
 export default function RegisterPage() {
@@ -25,7 +26,7 @@ export default function RegisterPage() {
 
 	return (
 		<main style={{height: '-webkit-fill-available', display: 'flex', flexDirection: "column"}}>
-			<h1 className={styles.title}>coffeit</h1>
+			<h1 className={styles.title}><Logo/></h1>
 			<form className={styles.form} onSubmit={e => {
 				e.preventDefault();
 				const formData = new FormData(e.currentTarget);

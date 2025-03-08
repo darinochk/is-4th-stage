@@ -8,6 +8,7 @@ import {useRouter} from "next/navigation";
 import {useUserStore} from "@/context/user-store";
 import MessageComponent from "@/app/components/message";
 import {Message} from "@/api/api";
+import Logo from "@/app/components/logo";
 
 
 export default function LoginPage() {
@@ -24,7 +25,7 @@ export default function LoginPage() {
 
 	return (
 		<main style={{height: '-webkit-fill-available', display: 'flex', flexDirection: "column"}}>
-			<h1 className={styles.title}>coffeeit</h1>
+			<h1 className={styles.title}><Logo/></h1>
 			<form className={styles.form} onSubmit={e => {
 				e.preventDefault();
 				const formData = new FormData(e.currentTarget);
