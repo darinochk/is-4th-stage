@@ -2,10 +2,10 @@ import {api, DefaultErrorHandler, Message} from "@/api/api";
 import {useUserStore} from "@/context/user-store";
 
 
-export async function Register(email: string, password: string, setMessage: (message: Message) => void) {
+export async function Register(payload: any, setMessage: (message: Message) => void) {
 	const setError = (err: string) => setMessage({isError: true, message: err});
 	try {
-		const res = await api.post("/account/register/", {email, password});
+		const res = await api.post("/account/register/", payload);
 		useUserStore.getState().Login(res.data.user, res.data.token);
 		setMessage({isError: false, message: "Ваш аккаунт создан!"});
 	} catch (err: any) {
