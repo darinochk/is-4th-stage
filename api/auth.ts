@@ -1,5 +1,5 @@
 import {api, DefaultErrorHandler, Message} from "@/api/api";
-import {useUserStore} from "@/context/user-store";
+import {IntUser, useUserStore} from "@/context/user-store";
 import {EffectCallback, useEffect} from "react";
 
 
@@ -32,4 +32,14 @@ export function useAuthEffect(effect: EffectCallback, deps?: React.DependencyLis
 			effect();
 		}
 	}, (deps || []).concat(state));
+}
+
+export async function GetUsers(): Promise<IntUser[]>{
+	try {
+		const res = await api.get("/admin/users");
+		return res.data;
+	} catch (err: any) {
+		DefaultErrorHandler(() => {})(err);
+		return [];
+	}
 }

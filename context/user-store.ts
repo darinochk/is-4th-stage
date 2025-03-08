@@ -7,7 +7,7 @@ export enum Role {
 	ADMIN = "ADMIN"
 }
 
-interface IntUser {
+export interface IntUser {
 	"id": number;
 	"firstName": string;
 	"lastName": string;
