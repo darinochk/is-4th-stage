@@ -33,6 +33,7 @@ export async function GetReviewsByUser(id: number) {
 export async function CreateReview(payload: any, setMessage: (message: Message) => void): Promise<Review | null> {
     try {
         const res = await api.post('/reviews/create', payload);
+        res.data.reviewDate = new Date(res.data.reviewDate);
         setMessage({isError: false, message: "Отзыв создан"});
         return res.data;
     } catch (err: any) {
