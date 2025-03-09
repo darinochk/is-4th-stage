@@ -26,6 +26,7 @@ const NAVIGATION_ROUTES: { [key: string]: NavigationRoute } = {
     "Отзывы": route('/review'),
     "Пользователи": route('/users', false, true),
     "Заказы": route('/waiters', true, true),
+    "События": route('/events'),
 }
 
 export default function Header() {

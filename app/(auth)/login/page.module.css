@@ -22,7 +22,7 @@
     text-align: left;
 }
 
-.form input {
+.form input, .form textarea {
     font-size: 11pt;
     border: 1px solid var(--color-blue);
     border-radius: 5px;
@@ -31,6 +31,7 @@
     margin-top: 10px;
 	min-width: min(474px, 80vw);
 	transition: var(--fast-transition);
+	resize: vertical;
 }
 
 .form input:focus {
