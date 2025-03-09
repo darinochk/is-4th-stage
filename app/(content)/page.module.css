@@ -1,3 +1,9 @@
+.title {
+    color: var(--color-blue);
+    text-align: center;
+    padding: 15px;
+}
+
 .write_desk {
     display: flex;
     flex-direction: column;

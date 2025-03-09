@@ -1,5 +1,5 @@
 import {api, DefaultErrorHandler, Message} from "@/api/api";
-import {IntUser, useUserStore} from "@/context/user-store";
+import {IntUser, Role, useUserStore} from "@/context/user-store";
 import {EffectCallback, useEffect} from "react";
 
 
@@ -62,5 +62,35 @@ export async function DeleteUser(id?: number) {
 		const res = await api.delete('/users/delete/' + id);
 	} catch (err: any) {
 		DefaultErrorHandler(() => {})(err);
+	}
+}
+
+export async function AdminDeleteUser(id: number) {
+	try {
+		const res = await api.delete('/admin/deleteUser/' + id);
+	} catch (err: any) {
+		DefaultErrorHandler(() => {})(err);
+	}
+}
+
+export async function AdminUpdateUser(id: number, payload: any, setError: (err: Message) => void): Promise<IntUser | null> {
+	try {
+		const res = await api.put('/admin/updateUser/' + id, payload);
+		setError({isError: false, message: "Данные обновлены"});
+		return res.data;
+	} catch (err: any) {
+		DefaultErrorHandler(setError)(err);
+		return null;
+	}
+}
+
+export async function AdminSetUserRole(id: number, role: Role, setError: (err: Message) => void): Promise<IntUser | null> {
+	try {
+		const res = await api.put('/admin/assignRole/' + id + '?role=' + role);
+		setError({isError: false, message: "Данные обновлены"});
+		return res.data;
+	} catch (err: any) {
+		DefaultErrorHandler(setError)(err);
+		return null;
 	}
 }

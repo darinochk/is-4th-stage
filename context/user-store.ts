@@ -2,7 +2,7 @@ import {create} from "zustand";
 import {AppRouterInstance} from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 export enum Role {
-	USER = "USER",
+	USER = "VISITOR",
 	WAITER = "WAITER",
 	ADMIN = "ADMIN"
 }
