@@ -1,7 +1,7 @@
 'use client'
 import styles from "./page.module.css";
 import {FocusEventHandler, useEffect, useRef, useState} from "react";
-import {CreateDesk, Desk, GetDesks} from "@/api/desks";
+import {CreateDesk, DeleteDesk, Desk, GetDesks, UpdateDesk} from "@/api/desks";
 import {useAuthEffect} from "@/api/auth";
 import {useUserStore} from "@/context/user-store";
 import MessageComponent from "@/app/components/message";
@@ -9,6 +9,7 @@ import Spinner from "@/app/components/spinner";
 import {Message} from "@/api/api";
 import {CreateBooking} from "@/api/booking";
 import {useRouter} from "next/navigation";
+import delete_icon from "@/public/trash.png";
 
 export default function Home() {
     const [desks, setDesks] = useState<Desk[]>([]);
@@ -79,18 +80,28 @@ export default function Home() {
                         </button>
                     </div>
                 </form>}
-            {desks.map(e => <DeskCard key={e.id} card={e}/>)}
+            <div className={styles.desks__container}>
+                {desks.map(e => <DeskCard key={e.id} card={e} cardChange={desk => {
+                    if (desk)
+                        setDesks(desks.map(e => e.id === desk.id ? desk : e))
+                    else
+                        setDesks(desks.filter(e1 => e.id !== e1.id))
+                }}/>)}
+            </div>
         </div>
     );
 }
 
 
-function DeskCard({card}: { card: Desk }) {
+function DeskCard({card, cardChange}: { card: Desk, cardChange: (card: Desk | null) => void }) {
     const dialogRef = useRef<HTMLDialogElement>(null);
     const [response, setResponse] = useState<Message | null>(null)
     const [requestSent, setRequestSent] = useState<boolean>(false);
     const [startDate, setStartDate] = useState<string>(new Date().toISOString().substring(0, 10));
     const router = useRouter();
+    const isAdmin = useUserStore((state) => state.user?.role === 'ADMIN');
+
+    const editDialogRef = useRef<HTMLDialogElement>(null)
 
     useEffect(() => {
         if (response?.isError === false)
@@ -98,7 +109,7 @@ function DeskCard({card}: { card: Desk }) {
     }, [response]);
 
     return (
-        <div>
+        <div className={styles.desk}>
             <h3>Столик номер: {card.deskNumber}</h3>
             <p>Вместимость: {card.capacity}</p>
             <p>Расположение: {card.location}</p>
@@ -106,6 +117,19 @@ function DeskCard({card}: { card: Desk }) {
                 dialogRef.current?.showModal();
             }}>Забронировать
             </button>
+            {isAdmin &&
+                <button onClick={() => {
+                    editDialogRef.current?.showModal();
+                }}>Изменить
+                </button>}
+            {isAdmin &&
+                <button onClick={() => {
+                    DeleteDesk(card.id)
+                        .then(() => {
+                            cardChange(null)
+                        });
+                }}>Удалить
+                </button>}
             <dialog onClick={e => {
                 if ((e.target as HTMLElement).tagName === 'DIALOG' && e.target === e.currentTarget) dialogRef.current?.close()
             }} ref={dialogRef}>
@@ -137,6 +161,54 @@ function DeskCard({card}: { card: Desk }) {
                     </div>
                 </form>
             </dialog>
+            {isAdmin && <dialog ref={editDialogRef} onClose={() => {
+                setResponse(null);
+                setRequestSent(false)
+            }}>
+                <form className={styles.write_desk} method='dialog'
+                      onSubmit={(e) => {
+                          e.preventDefault();
+                          const formData = new FormData(e.currentTarget);
+                          const form = e.currentTarget;
+                          UpdateDesk(card.id, Object.fromEntries(formData))
+                              .then(desk => {
+                                  if (desk) {
+                                      cardChange(desk);
+                                      form.reset();
+                                      setResponse(null);
+                                      setRequestSent(false);
+                                      editDialogRef.current?.close();
+                                  }
+                              })
+                      }}>
+                    <input type="text" className={styles.text} name="location" maxLength={256} required
+                           placeholder="Где находится столик?" defaultValue={card.location}
+                    />
+                    <label>Номер столика:
+                        <input type="number" className={styles.text} name="deskNumber"
+                               min={1} required defaultValue={card.deskNumber}
+                        />
+                    </label>
+                    <label>Вместимость столика:
+                        <input type="number" className={styles.text}
+                               name="capacity" min={1} required defaultValue={card.capacity}
+                        />
+                    </label>
+                    <MessageComponent message={response}/>
+                    <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+                        <button className={styles.publish} disabled={requestSent} onClick={e => {
+                            e.preventDefault();
+                            editDialogRef.current?.close();
+                        }}>
+                            Закрыть
+                        </button>
+                        <button className={styles.publish} disabled={requestSent}>{requestSent &&
+                            <Spinner size={30} style={{margin: "-11px 0 -11px -32px", paddingRight: "32px"}}/>}
+                            Сохранить столик
+                        </button>
+                    </div>
+                </form>
+            </dialog>}
         </div>
     )
 }

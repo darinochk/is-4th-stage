@@ -43,3 +43,20 @@ export async function CreateDesk(desk: any, setResponse: (message: Message | nul
         return null;
     }
 }
+
+export async function DeleteDesk(id: number) {
+    try {
+        const res = await api.delete('/desks/delete/' + id);
+    } catch (err: any) {
+        DefaultErrorHandler(() => {})(err);
+    }
+}
+
+export async function UpdateDesk(id: number, desk: any) {
+    try {
+        const res = await api.put('/desks/update/' + id, desk);
+        return res.data;
+    } catch (err: any) {
+        DefaultErrorHandler(() => {})(err);
+    }
+}
