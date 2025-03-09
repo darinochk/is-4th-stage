@@ -5,7 +5,7 @@ import {EffectCallback, useEffect} from "react";
 
 export async function Register(payload: any, setMessage: (message: Message) => void) {
 	try {
-		const res = await api.post("/account/register/", payload);
+		const res = await api.post("/account/register", payload);
 		useUserStore.getState().Login(res.data.user, res.data.token);
 		setMessage({isError: false, message: "Ваш аккаунт создан!"});
 	} catch (err: any) {
@@ -16,7 +16,7 @@ export async function Register(payload: any, setMessage: (message: Message) => v
 
 export async function Login(email: string, password: string, setMessage: (message: Message) => void) {
 	try {
-		const res = await api.post("/account/login/", {email, password});
+		const res = await api.post("/account/login", {email, password});
 		useUserStore.getState().Login(res.data.user, res.data.token);
 		setMessage({isError: false, message: "Вы вошли в аккаунт!"});
 	} catch (err: any) {
