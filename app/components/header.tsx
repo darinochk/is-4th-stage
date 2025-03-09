@@ -18,7 +18,8 @@ const route = (path: string, isAdmin: boolean = false): NavigationRoute => {
 
 const NAVIGATION_ROUTES: { [key: string]: NavigationRoute } = {
     "Столики": route('/'),
-    "Бронирования": route('/bookings')
+    "Бронирования": route('/bookings'),
+    "Отзывы": route('/review'),
 }
 
 export default function Header() {
