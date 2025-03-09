@@ -35,8 +35,10 @@ export default forwardRef(function UserChangePopup(
     }
 
     return (
-        <dialog ref={dialogRef}>
-            <form method='dialog' className='form'
+        <dialog ref={dialogRef} onClick={e => {
+            if ((e.target as HTMLElement).tagName === 'DIALOG' && e.target === e.currentTarget) dialogRef.current?.close()
+        }}>
+            <form method='dialog' className={styles.form} style={{marginTop: '10px'}}
                   onSubmit={e => {
                       e.preventDefault();
                       setRequestSent(true);
@@ -84,7 +86,7 @@ export default forwardRef(function UserChangePopup(
                 {/*           onInput={PasswordValidator} minLength={6}/>*/}
                 {/*</label>*/}
                 <MessageComponent message={response}/>
-                <div className={styles.buttons}>
+                <div className={styles.buttons} style={{marginBottom: '15px'}}>
                     <button disabled={requestSent}>{requestSent &&
                         <Spinner size={30} style={{margin: "-11px 0 -11px -32px", paddingRight: "32px"}}/>}Сохранить
                     </button>
