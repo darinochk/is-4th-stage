@@ -5,36 +5,46 @@ import {usePathname, useRouter} from "next/navigation";
 import {useUserStore} from "@/context/user-store";
 import Logo from "@/app/components/logo";
 import {useRef, useState} from "react";
+import {Message} from "@/api/api";
+import UserChangePopup from "@/app/components/user-change-popup";
+import {DeleteUser, UpdateUser} from "@/api/auth";
 
 
 interface NavigationRoute {
     path: string;
     isAdmin: boolean;
+    isWaiter: boolean;
 }
 
-const route = (path: string, isAdmin: boolean = false): NavigationRoute => {
-    return {path: path, isAdmin: isAdmin};
+const route = (path: string, isWaiter: boolean = false, isAdmin: boolean = false): NavigationRoute => {
+    return {path: path, isAdmin: isAdmin, isWaiter};
 };
 
 const NAVIGATION_ROUTES: { [key: string]: NavigationRoute } = {
     "Столики": route('/'),
     "Бронирования": route('/bookings'),
     "Отзывы": route('/review'),
+
 }
 
 export default function Header() {
     const [showComboBox, setShowComboBox] = useState(false);
     const isAdmin = useUserStore(state => state.user?.role == "ADMIN");
+    const isWaiter = useUserStore(state => state.user?.role == "WAITER");
     const name = useUserStore(state => state.user?.firstName);
     const path = usePathname();
     const router = useRouter();
     const dialogRef = useRef<HTMLDialogElement>(null);
+    const user = useUserStore(state => state.user);
 
 
     return (
         <header className="header">
             <a href='/' style={{marginRight: 'auto'}}><h1><Logo/></h1></a>
-            {Object.keys(NAVIGATION_ROUTES).filter(e => !NAVIGATION_ROUTES[e].isAdmin || NAVIGATION_ROUTES[e].isAdmin == isAdmin).map((key, index) =>
+            {Object.keys(NAVIGATION_ROUTES).filter(e =>
+                !NAVIGATION_ROUTES[e].isAdmin
+                || NAVIGATION_ROUTES[e].isAdmin == isAdmin
+                || NAVIGATION_ROUTES[e].isWaiter == isWaiter).map((key, index) =>
                 <Link className={"header-link" + (path == NAVIGATION_ROUTES[key].path ? " disabled" : "")}
                       href={NAVIGATION_ROUTES[key].path}
                       key={index}>
@@ -52,6 +62,14 @@ export default function Header() {
                         router.push('/login');
                     }}>Выйти
                     </button>
+                    <button onClick={() => {
+                        DeleteUser()
+                            .then(() => {
+                                useUserStore.getState().Logout();
+                                router.push('/login');
+                            });
+                    }}>Удалить аккаунт
+                    </button>
                 </div>}
                 <div onClick={() => setShowComboBox(!showComboBox)} style={{cursor: 'pointer'}}>
                     <svg width="25px" height="25px" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -62,12 +80,20 @@ export default function Header() {
                     {name}
                 </div>
             </div>
-            <dialog ref={dialogRef}>
-                <form method='dialog'>
-                    <h3>Мы отправили ссылку для сброса пароля вам на почту</h3>
-                    <button className='ok_button'>Понятно</button>
-                </form>
-            </dialog>
+            {user &&
+                <UserChangePopup ref={dialogRef} user={user} setUser={user => {
+                    let resolve: (mess: Message) => void = () => {
+                    };
+                    const setMessage = new Promise((res: (mess: Message) => void) => {
+                        resolve = res;
+                    })
+
+                    UpdateUser(user, resolve).then(newUser => {
+                        useUserStore.getState().Login(user, useUserStore.getState().token!);
+                    })
+
+                    return setMessage;
+                }}/>}
         </header>
     )
 }

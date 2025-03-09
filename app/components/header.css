@@ -88,3 +88,35 @@
     transition: var(--fast-transition);
     border: none;
 }
+
+.form {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    font-size: 11pt;
+}
+
+.form label {
+    user-select: none;
+    text-align: left;
+}
+
+.form input {
+    font-size: 11pt;
+    border: 1px solid var(--color-blue);
+    border-radius: 5px;
+    padding: 7px;
+    height: fit-content;
+    margin-top: 10px;
+    min-width: min(474px, 80vw);
+    transition: var(--fast-transition);
+}
+
+.form input:focus {
+    border-color: cornflowerblue;
+    outline: none;
+    box-shadow: 1px 1px 4px -1px var(--color-blue);
+}

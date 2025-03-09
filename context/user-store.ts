@@ -15,6 +15,7 @@ export interface IntUser {
 	"role": Role;
 	"phone": string;
 	locked: boolean;
+	address: string;
 }
 
 interface User {

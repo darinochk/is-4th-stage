@@ -43,3 +43,24 @@ export async function GetUsers(): Promise<IntUser[]>{
 		return [];
 	}
 }
+
+export async function UpdateUser(payload: any, setError: (err: Message) => void) {
+	try {
+		const res = await api.put('/users/update', payload);
+		setError({isError: false, message: "Данные обновлены"});
+		return res.data;
+	} catch (err: any) {
+		DefaultErrorHandler(setError)(err);
+		return null;
+	}
+}
+
+export async function DeleteUser(id?: number) {
+	if (id == undefined)
+		id = useUserStore.getState().user?.id;
+	try {
+		const res = await api.delete('/users/delete/' + id);
+	} catch (err: any) {
+		DefaultErrorHandler(() => {})(err);
+	}
+}
