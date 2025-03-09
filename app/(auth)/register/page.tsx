@@ -52,10 +52,6 @@ export default function RegisterPage() {
 					<input type="tel" name="phone" onInput={PhoneValidator}/>
 				</label>
 				<label>
-					Адрес<br/>
-					<input type="text" name="address"/>
-				</label>
-				<label>
 					Пароль<br/>
 					<input type="password" name="password" required autoComplete="new-password"
 						   onInput={PasswordValidator} minLength={6}/>

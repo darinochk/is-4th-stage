@@ -41,7 +41,6 @@ function UserCard({user, onChange}: { user: IntUser, onChange: (user: IntUser | 
             <h3>Имя: </h3> <h3>{user.firstName} {user.id === useUserStore.getState().user?.id ? "(Вы)" : ""}</h3>
             <h3>Фамилия: </h3> <h3>{user.lastName}</h3>
             <p>Телефон:</p><p>{user.phone}</p>
-            <p>Адрес:</p><p>{user.address}</p>
             <p>Почта:</p><p>{user.email}</p>
             <p>Роль:</p>
             <select value={user.role} disabled={user.id === useUserStore.getState().user?.id}

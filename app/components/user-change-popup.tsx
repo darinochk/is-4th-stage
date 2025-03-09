@@ -75,11 +75,6 @@ export default forwardRef(function UserChangePopup(
                     <input type="tel" name="phone" value={userInternal?.phone || ''}
                            onChange={handleUserChange} onInput={PhoneValidator}/>
                 </label>
-                <label>
-                    Адрес<br/>
-                    <input type="text" value={userInternal?.address || ''}
-                           onChange={handleUserChange} name="address"/>
-                </label>
                 {/*<label>*/}
                 {/*    Пароль<br/>*/}
                 {/*    <input type="password" name="password" required autoComplete="new-password"*/}
