@@ -25,7 +25,7 @@ const NAVIGATION_ROUTES: { [key: string]: NavigationRoute } = {
     "Бронирования": route('/bookings'),
     "Отзывы": route('/review'),
     "Пользователи": route('/users', false, true),
-
+    "Заказы": route('/waiters', true, true),
 }
 
 export default function Header() {
@@ -44,7 +44,7 @@ export default function Header() {
             <a href='/' style={{marginRight: 'auto'}}><h1><Logo/></h1></a>
             {Object.keys(NAVIGATION_ROUTES).filter(e =>
                 (!NAVIGATION_ROUTES[e].isAdmin || isAdmin)
-                && (!NAVIGATION_ROUTES[e].isWaiter || isWaiter)).map((key, index) =>
+                && (!NAVIGATION_ROUTES[e].isWaiter || isWaiter || isAdmin)).map((key, index) =>
                 <Link className={"header-link" + (path == NAVIGATION_ROUTES[key].path ? " disabled" : "")}
                       href={NAVIGATION_ROUTES[key].path}
                       key={index}>

@@ -8,7 +8,7 @@ export interface Order {
     orderDetailsId: number;
 }
 
-interface OrderDetails {
+export interface OrderDetails {
     orderDetailsId: number;
     totalAmount: number;
     orders: Order[];
