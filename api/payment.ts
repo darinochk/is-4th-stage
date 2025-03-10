@@ -7,8 +7,10 @@ export interface Payment {
     description: string;
     orderDate: Date;
     amount: number;
-    transactionId: number;
-    transactionStatus: string;
+    transaction: {
+        id: number;
+        status: string;
+    };
 }
 
 export async function InitPayment(orderDetailsId: number): Promise<Payment> {
@@ -23,8 +25,8 @@ export async function InitPayment(orderDetailsId: number): Promise<Payment> {
 
 export async function PayForOrder(paymentSessionId: number, accountNumber: string, setMessage: (message: Message) => void): Promise<Payment> {
     try {
-        const res = await api.post('/payments/pay/' + paymentSessionId, {accountNumber});
-        setMessage({isError: false, message: 'Оплата прошла успешно'});
+        const res = await api.post('/payments/pay/' + paymentSessionId + '?accountNumber=' + accountNumber);
+        setMessage({isError: false, message: 'Статус оплаты: ' + res.data?.transaction?.status});
         return res.data;
     } catch (err: any) {
         DefaultErrorHandler(() => {})(err);

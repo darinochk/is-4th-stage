@@ -21,23 +21,25 @@ export default forwardRef(function EventChangePopup(
     const [requestSent, setRequestSent] = useState<boolean>(false);
 
     return (
-        <dialog onClick={e => {
+        <dialog style={{padding: '10px'}} ref={dialogRef} onClick={e => {
             if ((e.target as HTMLElement).tagName === 'DIALOG' && e.target === e.currentTarget) dialogRef.current?.close();
         }}>
             <h1>Оплата</h1>
             <p>Заказчик: {payment.fullName}</p>
+            <p>Описание: {payment.description}</p>
             <p>Email: {payment.email}</p>
-            <p>Транзакция: {payment.transactionId}</p>
+            <p>Транзакция: {payment?.transaction?.id}</p>
             <p>Сумма: {payment.amount}</p>
-            <p>Статус: {payment.transactionStatus}</p>
+            <p>Статус: {payment?.transaction?.status}</p>
             <MessageComponent message={response}/>
             <div className={styles.buttons}>
-                <button disabled={requestSent || !response?.isError} onClick={() => {
+                <button disabled={requestSent} onClick={() => {
                     setResponse(null);
                     setRequestSent(true);
                     PayForOrder(payment.id, '', setResponse)
                         .then(pay => {
                             setPayment(pay);
+                            setRequestSent(false);
                         })
                 }}>{requestSent &&
                     <Spinner size={30} style={{margin: "-11px 0 -11px -32px", paddingRight: "32px"}}/>}Оплатить

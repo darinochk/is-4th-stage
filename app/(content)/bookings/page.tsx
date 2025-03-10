@@ -123,7 +123,7 @@ function BookingCard({booking, deleteBooking}: { booking: Booking, deleteBooking
                                 setOrders(orders.filter(e => e.id !== order.id));
                             })
                     }}>{order.foodName} ×{order.quantity} ({order.totalPrice}₽)</p>)}</div>}
-            <button disabled={payment?.transactionStatus === 'SUCCESS'} onClick={() => {
+            <button disabled={payment?.transaction?.status === 'SUCCESS'} onClick={() => {
                 if (orderDetails < 1) {
                     StartOrder(booking.id)
                         .then(id => {
@@ -134,10 +134,10 @@ function BookingCard({booking, deleteBooking}: { booking: Booking, deleteBooking
                         });
                 } else
                     orderRef.current?.showModal();
-            }}>{payment?.transactionStatus === 'SUCCESS' ? 'Вы уже оплатили заказ' : 'Добавить еды'}
+            }}>{payment?.transaction?.status === 'SUCCESS' ? 'Вы уже оплатили заказ' : 'Добавить еды'}
             </button>
             {orders.length > 0 && orderDetails > -1 &&
-                <button disabled={payment?.transactionStatus === 'SUCCESS'} onClick={() => {
+                <button disabled={payment?.transaction?.status === 'SUCCESS'} onClick={() => {
                     if (changed) {
                         ConfirmOrder(orderDetails)
                             .then(orders => {
@@ -152,17 +152,17 @@ function BookingCard({booking, deleteBooking}: { booking: Booking, deleteBooking
                         else
                             InitPayment(orderDetails).then(pay => {
                                 setPayment(pay);
-                                payRef.current?.showModal();
+                                setTimeout(() => payRef.current?.showModal(), 20);
                             })
                     }
-                }}>{changed ? 'Подтвердить еду' : payment?.transactionStatus === 'SUCCESS' ? 'Оплачено' : 'Оплатить'}
+                }}>{changed ? 'Подтвердить еду' : payment?.transaction?.status === 'SUCCESS' ? 'Оплачено' : 'Оплатить'}
                 </button>}
             <button onClick={deleteBooking}>Отменить бронь
             </button>
             {payment && <PaymentPopup ref={payRef} payment={payment} setPayment={paym => {
                 setPayment(paym);
-                if (paym.transactionStatus === 'SUCCESS')
-                    setTimeout(() => orderRef.current?.showModal(), 1500);
+                if (paym?.transaction?.status === 'SUCCESS')
+                    setTimeout(() => payRef.current?.close(), 1500);
             }}/>}
             <FoodOrderPopup orderDetails={orderDetails} ref={orderRef}
                             onOrder={order => setOrders([...orders, order])}/>

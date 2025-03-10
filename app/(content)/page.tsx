@@ -140,7 +140,7 @@ function DeskCard({card, cardChange}: { card: Desk, cardChange: (card: Desk | nu
                       }}
                 >
                     <h3>Бронирование столика {card.deskNumber}</h3>
-                    <input type='hidden' value={card.deskNumber} name='deskId'/>
+                    <input type='hidden' value={card.id} name='deskId'/>
                     <input type='hidden' value='initial' name='status'/>
                     <label>Дата начала:
                         <input type="date" className={styles.text} onChange={e => setStartDate(e.currentTarget.value)}
