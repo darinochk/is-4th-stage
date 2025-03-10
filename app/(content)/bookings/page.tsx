@@ -1,16 +1,18 @@
 'use client'
 import styles from "./page.module.css";
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {Booking, DeleteBooking, GetAdminBookings, GetBookings, GetBookingsByDesk} from "@/api/booking";
 import {useAuthEffect} from "@/api/auth";
 import {UserChooser} from "@/app/components/user-chooser";
 import {DeskChooser} from "@/app/components/desk-chooser";
 import {useUserStore} from "@/context/user-store";
-import {ConfirmOrder, Order, StartOrder} from "@/api/order";
+import {ConfirmOrder, GetOrderByBooking, Order, RemoveFoodFromOrder, StartOrder} from "@/api/order";
 import FoodOrderPopup from "@/app/components/food-order-popup";
 import {CreateFood, DeleteFood, Food, GetFood, UpdateFood} from "@/api/food";
 import FoodChangePopup from "@/app/components/food-change-popup";
 import {Message} from "@/api/api";
+import {InitPayment, Payment} from "@/api/payment";
+import PaymentPopup from "@/app/components/payment-popup";
 
 export default function Page() {
     const [bookings, setBookings] = useState<Booking[]>([]);
@@ -90,6 +92,20 @@ function BookingCard({booking, deleteBooking}: { booking: Booking, deleteBooking
     const [orderDetails, setOrderDetails] = useState<number>(-1);
     const [orders, setOrders] = useState<Order[]>([]);
     const orderRef = useRef<HTMLDialogElement>(null);
+    const [changed, setChanged] = useState(false);
+    const [payment, setPayment] = useState<Payment | null>(null);
+    const payRef = useRef<HTMLDialogElement>(null);
+
+    useAuthEffect(() => {
+        GetOrderByBooking(booking.id).then(details => {
+            setOrderDetails(details?.orderDetailsId || -1);
+            setOrders(details?.orders || []);
+        });
+    }, [])
+
+    useEffect(() => {
+        setChanged(true);
+    }, [orders]);
 
     return (
         <div key={booking.id} className={styles.booking}>
@@ -98,10 +114,16 @@ function BookingCard({booking, deleteBooking}: { booking: Booking, deleteBooking
             <p>Дата начала:</p> <p> {booking.startDate.toLocaleDateString()}</p>
             <p>Дата конца:</p> <p> {booking.endDate.toLocaleDateString()}</p>
             <p>Статус:</p> <p> {booking.status}</p>
+            <p>Цена:</p> <p> {orders.reduce((acc, e) => acc + e.totalPrice, 0)}₽</p>
             {orders.length > 0 && <div><h3>Ваш заказ:</h3>
-                {orders.map((order, index) => <p
-                    key={index}>{order.foodName} ×{order.quantity} ({order.totalPrice}₽)</p>)}</div>}
-            <button onClick={() => {
+                {orders.map((order, index) =>
+                    <p key={index} style={{cursor: 'pointer'}} onClick={() => {
+                        RemoveFoodFromOrder(order.id)
+                            .then(() => {
+                                setOrders(orders.filter(e => e.id !== order.id));
+                            })
+                    }}>{order.foodName} ×{order.quantity} ({order.totalPrice}₽)</p>)}</div>}
+            <button disabled={payment?.transactionStatus === 'SUCCESS'} onClick={() => {
                 if (orderDetails < 1) {
                     StartOrder(booking.id)
                         .then(id => {
@@ -112,18 +134,33 @@ function BookingCard({booking, deleteBooking}: { booking: Booking, deleteBooking
                         });
                 } else
                     orderRef.current?.showModal();
-            }}>{orderDetails == -2 ? 'Ваш заказ сделан, заказать ещё?' : 'Добавить еды'}
+            }}>{payment?.transactionStatus === 'SUCCESS' ? 'Вы уже оплатили заказ' : 'Добавить еды'}
             </button>
-            {orders.length > 0 && orderDetails > -1 && <button onClick={() => {
-                ConfirmOrder(orderDetails)
-                    .then(orders => {
-                        setOrders(orders.orders);
-                        setOrderDetails(-2);
-                    });
-            }}>Подтвердить еду
+            {orders.length > 0 && orderDetails > -1 && <button disabled={payment?.transactionStatus === 'SUCCESS'} onClick={() => {
+                if (changed) {
+                    ConfirmOrder(orderDetails)
+                        .then(orders => {
+                            if (orders) setOrders(orders.orders);
+                            if (orders) setChanged(false);
+                        });
+                } else {
+                    if (payment)
+                        payRef.current?.showModal();
+                    else
+                        InitPayment(orderDetails).then(pay => {
+                            setPayment(pay);
+                            payRef.current?.showModal();
+                        })
+                }
+            }}>{changed ? 'Подтвердить еду' : payment?.transactionStatus === 'SUCCESS' ? 'Оплачено' : 'Оплатить'}
             </button>}
             <button onClick={deleteBooking}>Отменить бронь
             </button>
+            {payment && <PaymentPopup ref={payRef} payment={payment} setPayment={paym => {
+                setPayment(paym);
+                if (paym.transactionStatus === 'SUCCESS')
+                    setTimeout(() => orderRef.current?.showModal(), 1500);
+            }}/>}
             <FoodOrderPopup orderDetails={orderDetails} ref={orderRef}
                             onOrder={order => setOrders([...orders, order])}/>
         </div>
@@ -145,7 +182,8 @@ function FoodCard({food, onChange}: { food: Food, onChange: (food: Food | null) 
                     <button onClick={() => {
                         DeleteFood(food.id)
                             .then(() => onChange(null));
-                    }}>Удалить</button>
+                    }}>Удалить
+                    </button>
                 </>
             )}
             <FoodChangePopup food={food} setFood={updatedFood => {
@@ -156,7 +194,7 @@ function FoodCard({food, onChange}: { food: Food, onChange: (food: Food | null) 
                         }
                     });
                 });
-            }} ref={dialogRef} />
+            }} ref={dialogRef}/>
         </div>
     )
 }

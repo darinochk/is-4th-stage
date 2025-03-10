@@ -4,31 +4,15 @@ import {useState} from "react";
 import {Booking} from "@/api/booking";
 import {useAuthEffect} from "@/api/auth";
 import {ConfirmOrder, Order, OrderDetails, StartOrder} from "@/api/order";
-import FoodOrderPopup from "@/app/components/food-order-popup";
-import {ConfirmBooking, GetWaiterBookings, GetWaiterOrders} from "@/api/waiter";
+import {ConfirmBooking, GetWaiterBookings, GetWaiterOrders, GetWaiterOrdersDetails} from "@/api/waiter";
 
 export default function Page() {
     const [bookings, setBookings] = useState<Booking[]>([])
-    const [orders, setOrders] = useState<(OrderDetails & {confirmed?: boolean})[]>([]);
+    // const [orders, setOrders] = useState<OrderDetails[]>([]);
 
     useAuthEffect(() => {
         GetWaiterBookings().then(setBookings);
-        GetWaiterOrders().then(orders => {
-            const details: { [key: number]: OrderDetails } = {};
-
-            orders.forEach(order => {
-                if (!details[order.orderDetailsId]) {
-                    details[order.orderDetailsId] = {
-                        orderDetailsId: order.orderDetailsId,
-                        totalAmount: 0,
-                        orders: []
-                    }
-                }
-                details[order.orderDetailsId].orders.push(order);
-                details[order.orderDetailsId].totalAmount += order.totalPrice;
-                setOrders(Object.values(details));
-            });
-        });
+        // GetWaiterOrdersDetails().then(setOrders);
     }, []);
 
     return (
@@ -42,24 +26,26 @@ export default function Page() {
                         ConfirmBooking(booking.id);
                     }}/>
                 )}
-                {orders.map(order =>
-                    <div key={order.orderDetailsId} className={styles.booking}>
-                        <h2>Тип:</h2> <h2>Заказ</h2>
-                        <p>Итоговая сумма:</p> <p>{order.totalAmount}</p>
-                        <div>
-                            <p>Состав:</p>
-                            {order.orders.map((order, index) =>
-                                <p key={index}>{order.foodName} ×{order.quantity} ({order.totalPrice}₽)</p>
-                            )}
-                        </div>
-                        <button onClick={() => {
-                            ConfirmOrder(order.orderDetailsId);
-                            setOrders(orders.map(e => e.orderDetailsId === order.orderDetailsId ? {...e, confirmed: true} : e));
-                        }} disabled={order?.confirmed}>
-                            {order?.confirmed ? 'Заказ уже принят' : 'Принять заказ'}
-                        </button>
-                    </div>
-                )}
+                {/*{orders.map(order =>*/}
+                {/*    <div key={order.orderDetailsId} className={styles.booking}>*/}
+                {/*        <h2>Тип:</h2> <h2>Заказ</h2>*/}
+                {/*        <p>Итоговая сумма:</p> <p>{order.totalAmount}</p>*/}
+                {/*        <div>*/}
+                {/*            <p>Состав:</p>*/}
+                {/*            {order.orders.map((order, index) =>*/}
+                {/*                <p key={index}>{order.foodName} ×{order.quantity} ({order.totalPrice}₽)</p>*/}
+                {/*            )}*/}
+                {/*        </div>*/}
+                {/*        <button onClick={() => {*/}
+                {/*            ConfirmOrder(order.orderDetailsId)*/}
+                {/*                .then(details => {*/}
+                {/*                    setOrders(orders.map(o => o.orderDetailsId === order.orderDetailsId ? details : o));*/}
+                {/*                });*/}
+                {/*        }} disabled={order.status === 'CONFIRMED'}>*/}
+                {/*            {order.status === 'CONFIRMED' ? 'Бронь уже подтверждена' : 'Подтвердить бронь'}*/}
+                {/*        </button>*/}
+                {/*    </div>*/}
+                {/*)}*/}
             </div>
         </main>
     )

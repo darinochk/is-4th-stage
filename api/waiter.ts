@@ -1,6 +1,6 @@
 import {api, DefaultErrorHandler} from "@/api/api";
 import {Booking} from "@/api/booking";
-import {Order} from "@/api/order";
+import {Order, OrderDetails} from "@/api/order";
 
 
 export async function GetWaiterBookings(): Promise<Booking[]> {
@@ -25,6 +25,15 @@ export async function GetWaiterOrders(): Promise<Order[]> {
     }
 }
 
+export async function GetWaiterOrdersDetails(): Promise<OrderDetails[]> {
+    try {
+        const res = await api.get('/waiter/orderDetails');
+        return res.data;
+    } catch (err: any) {
+        DefaultErrorHandler(() => {})(err);
+        return [];
+    }
+}
 
 export async function ConfirmOrderDetails(orderDetailsId: number){
     try {

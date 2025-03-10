@@ -12,6 +12,7 @@ export interface OrderDetails {
     orderDetailsId: number;
     totalAmount: number;
     orders: Order[];
+    status: string;
 }
 
 export async function StartOrder(id: number): Promise<number> {
@@ -24,13 +25,13 @@ export async function StartOrder(id: number): Promise<number> {
     }
 }
 
-export async function ConfirmOrder(id: number): Promise<OrderDetails> {
+export async function ConfirmOrder(id: number): Promise<OrderDetails | null> {
     try {
         const res = await api.get('/order-details/confirm_details/' + id);
         return res.data;
     } catch (err: any) {
         DefaultErrorHandler(() => {})(err);
-        return {orderDetailsId: 0, totalAmount: 0, orders: []};
+        return null;
     }
 }
 
@@ -42,5 +43,23 @@ export async function AddFoodToOrder(payload: any, setMessage: (message: Message
     } catch (err: any) {
         DefaultErrorHandler(setMessage)(err);
         return null;
+    }
+}
+
+export async function GetOrderByBooking(id: number): Promise<OrderDetails | null> {
+    try {
+        const res = await api.get('/order-details/get/' + id);
+        return res.data;
+    } catch (err: any) {
+        DefaultErrorHandler(() => {})(err);
+        return null;
+    }
+}
+
+export async function RemoveFoodFromOrder(id: number) {
+    try {
+        const res = await api.delete('/orders/delete/' + id);
+    } catch (err: any) {
+        DefaultErrorHandler(() => {})(err);
     }
 }
