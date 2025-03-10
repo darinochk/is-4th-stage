@@ -13,7 +13,7 @@ export interface Payment {
 
 export async function InitPayment(orderDetailsId: number): Promise<Payment> {
     try {
-        const res = await api.post('/payment/init/' + orderDetailsId);
+        const res = await api.post('/payments/init/' + orderDetailsId);
         return res.data;
     } catch (err: any) {
         DefaultErrorHandler(() => {})(err);
@@ -23,7 +23,7 @@ export async function InitPayment(orderDetailsId: number): Promise<Payment> {
 
 export async function PayForOrder(paymentSessionId: number, accountNumber: string, setMessage: (message: Message) => void): Promise<Payment> {
     try {
-        const res = await api.post('/payment/pay/' + paymentSessionId, {accountNumber});
+        const res = await api.post('/payments/pay/' + paymentSessionId, {accountNumber});
         setMessage({isError: false, message: 'Оплата прошла успешно'});
         return res.data;
     } catch (err: any) {
