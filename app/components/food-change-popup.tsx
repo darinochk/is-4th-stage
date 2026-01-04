@@ -2,12 +2,12 @@ import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "re
 import styles from "@/app/(auth)/login/page.module.css";
 import Spinner from "@/app/components/spinner";
 import MessageComponent from "@/app/components/message";
-import { Food } from "@/api/food";
-import { Message } from "@/api/api";
+import { Food } from "@/app/services/api";
+import { ApiMessage } from "@/app/services/http";
 
 interface FoodChangePopupProps {
   food: Food;
-  setFood: (food: Food) => Promise<Message>;
+  setFood: (food: Food) => Promise<ApiMessage>;
 }
 
 const FoodChangePopup = forwardRef<HTMLDialogElement, FoodChangePopupProps>(
@@ -16,7 +16,7 @@ const FoodChangePopup = forwardRef<HTMLDialogElement, FoodChangePopupProps>(
     useImperativeHandle(ref, () => dialogRef.current!);
 
     const [foodInternal, setFoodInternal] = useState<Food>(food);
-    const [response, setResponse] = useState<Message | null>(null);
+    const [response, setResponse] = useState<ApiMessage | null>(null);
     const [requestSent, setRequestSent] = useState<boolean>(false);
 
     useEffect(() => {

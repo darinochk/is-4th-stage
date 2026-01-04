@@ -1,23 +1,17 @@
 "use client";
 import { IntUser, Role, useUserStore } from "@/context/user-store";
 import { useRef, useState } from "react";
-import {
-  AdminDeleteUser,
-  AdminSetUserRole,
-  AdminUpdateUser,
-  GetUsers,
-  UpdateUser,
-  useAuthEffect,
-} from "@/api/auth";
+import { authService } from "@/app/services/api";
+import { useAuthEffect } from "@/app/hooks/use-auth-effect";
 import styles from "../page.module.css";
 import UserChangePopup from "@/app/components/user-change-popup";
-import { Message } from "@/api/api";
+import { ApiMessage } from "@/app/services/http";
 
 export default function Page() {
   const [users, setUsers] = useState<IntUser[]>([]);
 
   useAuthEffect(() => {
-    GetUsers().then(setUsers);
+    authService.getUsers().then(setUsers);
   }, []);
 
   return (
@@ -32,7 +26,7 @@ export default function Page() {
                 setUsers(users.map((e) => (e.id === newUser.id ? newUser : e)));
               } else {
                 setUsers(users.filter((e) => e.id !== user.id));
-                AdminDeleteUser(user.id);
+                authService.adminDeleteUser(user.id);
               }
             }}
             key={index}
@@ -64,10 +58,12 @@ function UserCard({ user, onChange }: { user: IntUser; onChange: (user: IntUser 
         onChange={(e) => {
           const select = e.currentTarget;
           select.disabled = true;
-          AdminSetUserRole(user.id, e.target.value as Role, () => {}).then((user) => {
-            select.disabled = false;
-            if (user) onChange(user);
-          });
+          authService
+            .adminSetUserRole(user.id, e.target.value as Role, () => {})
+            .then((user) => {
+              select.disabled = false;
+              if (user) onChange(user);
+            });
         }}
       >
         {Object.values(Role).map((e) => (
@@ -88,12 +84,12 @@ function UserCard({ user, onChange }: { user: IntUser; onChange: (user: IntUser 
         user={user}
         ref={dialogRef}
         setUser={(us) => {
-          let resolve: (mess: Message) => void = () => {};
-          const setMessage = new Promise((res: (mess: Message) => void) => {
+          let resolve: (mess: ApiMessage) => void = () => {};
+          const setMessage = new Promise((res: (mess: ApiMessage) => void) => {
             resolve = res;
           });
 
-          AdminUpdateUser(user.id, us, resolve).then((newUser) => {
+          authService.adminUpdateUser(user.id, us, resolve).then((newUser) => {
             if (newUser) {
               if (useUserStore.getState().user?.id === user.id) {
                 useUserStore.getState().Login(newUser, useUserStore.getState().token!);

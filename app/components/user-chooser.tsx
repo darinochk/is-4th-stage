@@ -2,7 +2,7 @@
 import "./user-chooser.css";
 import { useEffect, useState } from "react";
 import { IntUser, useUserStore } from "@/context/user-store";
-import { GetUsers } from "@/api/auth";
+import { authService } from "@/app/services/api";
 
 export function UserChooser({
   onUserChange,
@@ -16,7 +16,7 @@ export function UserChooser({
   const [focused, setFocused] = useState(false);
 
   useEffect(() => {
-    if (inited) GetUsers().then(setUsers);
+    if (inited) authService.getUsers().then(setUsers);
   }, [inited]);
 
   useEffect(() => {

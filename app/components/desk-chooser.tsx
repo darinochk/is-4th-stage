@@ -1,8 +1,9 @@
 "use client";
 import "./user-chooser.css";
 import { useEffect, useState } from "react";
-import { IntUser, useUserStore } from "@/context/user-store";
-import { Desk, GetDesks } from "@/api/desks";
+import { useUserStore } from "@/context/user-store";
+import { Desk } from "@/app/services/api";
+import { deskService } from "@/app/services/api";
 
 export function DeskChooser({
   setDeskAction,
@@ -13,7 +14,7 @@ export function DeskChooser({
   const inited = useUserStore((state) => state.inited);
 
   useEffect(() => {
-    if (inited) GetDesks().then(setDesks);
+    if (inited) deskService.getDesks().then(setDesks);
   }, [inited]);
 
   return (

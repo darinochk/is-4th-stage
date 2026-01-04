@@ -1,19 +1,11 @@
 "use client";
 import EventChangePopup from "@/app/components/event-change-popup";
-import { Message } from "@/api/api";
-import {
-  CoffeeEvent,
-  CreateEvent,
-  CreatePromotion,
-  DeleteEvent,
-  GetAllEvents,
-  GetAllPromotions,
-  Promotion,
-  UpdateEvent,
-} from "@/api/events-promotions";
+import { ApiMessage } from "@/app/services/http";
+import { CoffeeEvent, Promotion } from "@/app/services/api";
+import { eventService } from "@/app/services/api";
 import { FocusEventHandler, useRef, useState } from "react";
 import styles from "../page.module.css";
-import { useAuthEffect } from "@/api/auth";
+import { useAuthEffect } from "@/app/hooks/use-auth-effect";
 import Spinner from "@/app/components/spinner";
 import MessageComponent from "@/app/components/message";
 import { useUserStore } from "@/context/user-store";
@@ -24,14 +16,14 @@ export default function Page() {
   const [writing, setWriting] = useState(false);
   const [closingTimeout, setClosingTimeout] = useState<NodeJS.Timeout>(setTimeout(() => {}, 0));
 
-  const [response, setResponse] = useState<Message | null>(null);
-  const [requestSent, setRequestSent] = useState<boolean>(false);
+  const [response, setResponse] = useState<ApiMessage | null>(null);
+  const [requestSent] = useState<boolean>(false);
   const inited = useUserStore((state) => state.inited);
   const isAdmin = useUserStore((state) => state.user?.role === "ADMIN");
 
   useAuthEffect(() => {
-    GetAllEvents().then(setEvents);
-    GetAllPromotions().then(setPromotions);
+    eventService.getAllEvents().then(setEvents);
+    eventService.getAllPromotions().then(setPromotions);
   }, []);
 
   const handleBlur: FocusEventHandler<
@@ -64,7 +56,10 @@ export default function Page() {
             };
 
             const selectedType = formData.get("eventType");
-            const createFunction = selectedType === "promotion" ? CreatePromotion : CreateEvent;
+            const createFunction =
+              selectedType === "promotion"
+                ? eventService.createPromotion
+                : eventService.createEvent;
 
             createFunction(eventData, setResponse).then((post) => {
               if (post) {
@@ -154,7 +149,7 @@ export default function Page() {
                   setEvents(events.map((e) => (e.id === newEvent.id ? newEvent : e)));
                 } else {
                   setEvents(events.filter((e) => e.id !== event.id));
-                  DeleteEvent(event.id);
+                  eventService.deleteEvent(event.id);
                 }
               }}
             />
@@ -201,12 +196,12 @@ function EventCard({
         event={event}
         ref={dialogRef}
         setEvent={(ev) => {
-          let resolve: (mess: Message) => void = () => {};
-          const setMessage = new Promise((res: (mess: Message) => void) => {
+          let resolve: (mess: ApiMessage) => void = () => {};
+          const setMessage = new Promise((res: (mess: ApiMessage) => void) => {
             resolve = res;
           });
 
-          UpdateEvent(event.id, ev, resolve).then((newEvent) => {
+          eventService.updateEvent(event.id, ev, resolve).then((newEvent) => {
             if (newEvent) {
               onChange(newEvent);
             }

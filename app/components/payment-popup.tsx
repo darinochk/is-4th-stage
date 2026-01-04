@@ -1,6 +1,7 @@
-import { PayForOrder, Payment } from "@/api/payment";
+import { Payment } from "@/app/services/api";
+import { paymentService } from "@/app/services/api";
 import { forwardRef, useImperativeHandle, useRef, useState } from "react";
-import { Message } from "@/api/api";
+import { ApiMessage } from "@/app/services/http";
 import MessageComponent from "@/app/components/message";
 import styles from "@/app/(auth)/login/page.module.css";
 import Spinner from "@/app/components/spinner";
@@ -16,7 +17,7 @@ export default forwardRef(function PaymentPopup(
 ) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   useImperativeHandle(ref, () => dialogRef.current!);
-  const [response, setResponse] = useState<Message | null>(null);
+  const [response, setResponse] = useState<ApiMessage | null>(null);
   const [requestSent, setRequestSent] = useState<boolean>(false);
 
   return (
@@ -42,7 +43,7 @@ export default forwardRef(function PaymentPopup(
           onClick={() => {
             setResponse(null);
             setRequestSent(true);
-            PayForOrder(payment.id, "", setResponse).then((pay) => {
+            paymentService.payForOrder(payment.id, "", setResponse).then((pay) => {
               setPayment(pay);
               setRequestSent(false);
             });

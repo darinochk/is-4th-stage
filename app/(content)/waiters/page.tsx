@@ -1,16 +1,15 @@
 "use client";
 import styles from "./page.module.css";
 import { useState } from "react";
-import { Booking } from "@/api/booking";
-import { useAuthEffect } from "@/api/auth";
-import { Order } from "@/api/order";
-import { ConfirmBooking, GetWaiterBookings } from "@/api/waiter";
+import { Booking, Order } from "@/app/services/api";
+import { useAuthEffect } from "@/app/hooks/use-auth-effect";
+import { waiterService } from "@/app/services/api";
 
 export default function Page() {
   const [bookings, setBookings] = useState<Booking[]>([]);
 
   useAuthEffect(() => {
-    GetWaiterBookings().then(setBookings);
+    waiterService.getWaiterBookings().then(setBookings);
   }, []);
 
   return (
@@ -24,7 +23,7 @@ export default function Page() {
             key={booking.id}
             booking={booking}
             deleteBooking={() => {
-              ConfirmBooking(booking.id);
+              waiterService.confirmBooking(booking.id);
             }}
           />
         ))}
@@ -34,7 +33,7 @@ export default function Page() {
 }
 
 function BookingCard({ booking, deleteBooking }: { booking: Booking; deleteBooking: () => void }) {
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders] = useState<Order[]>([]);
 
   return (
     <div key={booking.id} className={styles.booking}>

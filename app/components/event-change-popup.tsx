@@ -1,9 +1,9 @@
-import { Message } from "@/api/api";
+import { ApiMessage } from "@/app/services/http";
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import MessageComponent from "@/app/components/message";
 import styles from "@/app/(auth)/login/page.module.css";
 import Spinner from "@/app/components/spinner";
-import { CoffeeEvent } from "@/api/events-promotions";
+import { CoffeeEvent } from "@/app/services/api";
 
 export default forwardRef(function EventChangePopup(
   {
@@ -11,7 +11,7 @@ export default forwardRef(function EventChangePopup(
     setEvent,
   }: {
     event: CoffeeEvent;
-    setEvent: (event: CoffeeEvent) => Promise<Message>;
+    setEvent: (event: CoffeeEvent) => Promise<ApiMessage>;
   },
   ref: React.Ref<HTMLDialogElement | null>
 ) {
@@ -19,7 +19,7 @@ export default forwardRef(function EventChangePopup(
   useImperativeHandle(ref, () => dialogRef.current!);
 
   const [eventInternal, setEventInternal] = useState<CoffeeEvent>(event);
-  const [response, setResponse] = useState<Message | null>(null);
+  const [response, setResponse] = useState<ApiMessage | null>(null);
   const [requestSent, setRequestSent] = useState<boolean>(false);
 
   useEffect(() => {
