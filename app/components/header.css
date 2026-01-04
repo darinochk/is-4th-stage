@@ -1,122 +1,122 @@
 .header {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    height: 50px;
-    font-size: 20px;
-    align-items: center;
-    border-bottom: 1px solid var(--color-blue);
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  height: 50px;
+  font-size: 20px;
+  align-items: center;
+  border-bottom: 1px solid var(--color-blue);
 }
 
 .header > * {
-    padding: 10px;
-    transition: var(--fast-transition);
+  padding: 10px;
+  transition: var(--fast-transition);
 }
 
 .header > *:hover {
-    color: #898989;
+  color: #898989;
 }
 
 .header > *.disabled {
-    color: #898989;
-    cursor: text;
-    position: relative;
+  color: #898989;
+  cursor: text;
+  position: relative;
 }
 
 .header > *.disabled::before {
-    content: "";
-    box-shadow: 0 0 20px 2px var(--foreground);
-    position: absolute;
-    top: 50%;
-    left: 10%;
-    width: 80%;
+  content: "";
+  box-shadow: 0 0 20px 2px var(--foreground);
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  width: 80%;
 }
 
 .header .profile {
-    margin-left: auto;
-    position: relative;
-    min-width: 150px;
+  margin-left: auto;
+  position: relative;
+  min-width: 150px;
 }
 
 .header .combo-box {
-    position: absolute;
-    top: 100%;
-    background: var(--background);
-    border: 1px solid var(--color-blue);
-    box-shadow: 2px 2px 4px -1px;
-    border-radius: 5px;
-    z-index: 9999;
+  position: absolute;
+  top: 100%;
+  background: var(--background);
+  border: 1px solid var(--color-blue);
+  box-shadow: 2px 2px 4px -1px;
+  border-radius: 5px;
+  z-index: 9999;
 }
 
 .header .combo-box > button {
-    border: none;
-    width: 100%;
-    outline: none;
-    color: var(--foreground);
-    margin: 0;
-    box-shadow: none;
-    background: var(--background);
-    border-radius: 0;
-    cursor: pointer;
-    padding: 5px;
+  border: none;
+  width: 100%;
+  outline: none;
+  color: var(--foreground);
+  margin: 0;
+  box-shadow: none;
+  background: var(--background);
+  border-radius: 0;
+  cursor: pointer;
+  padding: 5px;
 }
 
 .header .combo-box > button:hover {
-    filter: brightness(0.8);
+  filter: brightness(0.8);
 }
 
 .header .combo-box > button:not(:last-child) {
-    border-bottom: 1px solid var(--color-blue);
+  border-bottom: 1px solid var(--color-blue);
 }
 
 .header dialog {
-    color: var(--foreground) !important;
-    opacity: 1;
-    filter: none;
+  color: var(--foreground) !important;
+  opacity: 1;
+  filter: none;
 }
 
 .header .ok_button {
-    display: block;
-    margin: 20px auto;
-    font-size: 12pt;
-    font-family: inherit;
-    background: var(--color-blue);
-    color: white;
-    border-radius: 15px;
-    padding: 10px 55px;
-    cursor: pointer;
-    transition: var(--fast-transition);
-    border: none;
+  display: block;
+  margin: 20px auto;
+  font-size: 12pt;
+  font-family: inherit;
+  background: var(--color-blue);
+  color: white;
+  border-radius: 15px;
+  padding: 10px 55px;
+  cursor: pointer;
+  transition: var(--fast-transition);
+  border: none;
 }
 
 .form {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    font-size: 11pt;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  font-size: 11pt;
 }
 
 .form label {
-    user-select: none;
-    text-align: left;
+  user-select: none;
+  text-align: left;
 }
 
 .form input {
-    font-size: 11pt;
-    border: 1px solid var(--color-blue);
-    border-radius: 5px;
-    padding: 7px;
-    height: fit-content;
-    margin-top: 10px;
-    min-width: min(474px, 80vw);
-    transition: var(--fast-transition);
+  font-size: 11pt;
+  border: 1px solid var(--color-blue);
+  border-radius: 5px;
+  padding: 7px;
+  height: fit-content;
+  margin-top: 10px;
+  min-width: min(474px, 80vw);
+  transition: var(--fast-transition);
 }
 
 .form input:focus {
-    border-color: cornflowerblue;
-    outline: none;
-    box-shadow: 1px 1px 4px -1px var(--color-blue);
+  border-color: cornflowerblue;
+  outline: none;
+  box-shadow: 1px 1px 4px -1px var(--color-blue);
 }

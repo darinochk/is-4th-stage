@@ -1,66 +1,68 @@
 .main {
-    display: grid;
-    grid-template-columns: 2fr max-content;
+  display: grid;
+  grid-template-columns: 2fr max-content;
 }
 
 .title {
-    color: var(--color-blue);
-    text-align: center;
-    padding: 15px;
+  color: var(--color-blue);
+  text-align: center;
+  padding: 15px;
 }
 
 .title__container {
-    position: relative;
+  position: relative;
 }
 
 .title__container select {
-    margin-top: 15px;
-    padding: 10px;
-    border: 1px solid var(--color-blue);
-    border-radius: 15px;
-    width: 100%;
-    text-align: center;
+  margin-top: 15px;
+  padding: 10px;
+  border: 1px solid var(--color-blue);
+  border-radius: 15px;
+  width: 100%;
+  text-align: center;
 }
 
 .bookings__container {
-    padding: 15px;
-    display: flex;
-    gap: 15px;
-    flex-direction: row;
-    flex-wrap: wrap;
+  padding: 15px;
+  display: flex;
+  gap: 15px;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .booking {
-    padding: 15px;
-    border: 1px solid var(--color-blue);
-    border-radius: 15px;
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    gap: 5px 15px;
+  padding: 15px;
+  border: 1px solid var(--color-blue);
+  border-radius: 15px;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 5px 15px;
 }
 
 .booking > button {
-    grid-column: span 2;
+  grid-column: span 2;
 }
 
 .booking:nth-child(2n) {
-    border: 1px solid var(--color-orange);
+  border: 1px solid var(--color-orange);
 }
 
-.booking button, .bookings__container > button {
-    font-size: 11pt;
-    font-family: inherit;
-    background: var(--color-blue);
-    color: white;
-    border: 1px solid var(--color-blue);
-    border-radius: 5px;
-    padding: 5px 30px;
-    cursor: pointer;
-    transition: var(--fast-transition);
-    margin-top: 10px;
+.booking button,
+.bookings__container > button {
+  font-size: 11pt;
+  font-family: inherit;
+  background: var(--color-blue);
+  color: white;
+  border: 1px solid var(--color-blue);
+  border-radius: 5px;
+  padding: 5px 30px;
+  cursor: pointer;
+  transition: var(--fast-transition);
+  margin-top: 10px;
 }
 
-.booking button:hover, .form button:disabled {
-    background: white;
-    color: var(--color-blue);
+.booking button:hover,
+.form button:disabled {
+  background: white;
+  color: var(--color-blue);
 }
