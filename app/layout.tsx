@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import {Manrope} from "next/font/google";
+import { Manrope } from "next/font/google";
 import "./globals.css";
 
 const manRope = Manrope({
@@ -8,7 +8,7 @@ const manRope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "coffeit"
+  title: "coffeit",
 };
 
 export default function RootLayout({
@@ -18,9 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru">
-      <body className={`${manRope.variable}`}>
-        {children}
-      </body>
+      <body className={`${manRope.variable}`}>{children}</body>
     </html>
   );
 }
