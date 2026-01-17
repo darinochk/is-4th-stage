@@ -1,11 +1,16 @@
 "use client";
 import { IntUser, Role, useUserStore } from "@/context/user-store";
 import { useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { authService } from "@/app/services/api";
 import { useAuthEffect } from "@/app/hooks/use-auth-effect";
 import styles from "../page.module.css";
-import UserChangePopup from "@/app/components/user-change-popup";
 import { ApiMessage } from "@/app/services/http";
+
+// Lazy load popup component
+const UserChangePopup = dynamic(() => import("@/app/components/user-change-popup"), {
+  ssr: false,
+});
 
 export default function Page() {
   const [users, setUsers] = useState<IntUser[]>([]);

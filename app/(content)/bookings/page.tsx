@@ -1,15 +1,20 @@
 "use client";
 import styles from "./page.module.css";
 import { useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { Booking, Food } from "@/app/services/api";
 import { bookingService, foodService } from "@/app/services/api";
 import { useAuthEffect } from "@/app/hooks/use-auth-effect";
 import { DeskChooser } from "@/app/components/desk-chooser";
 import { useUserStore } from "@/context/user-store";
-import FoodChangePopup from "@/app/components/food-change-popup";
 import { ApiMessage } from "@/app/services/http";
 import { BookingCard } from "@/app/components/booking-card";
 import { FoodCard } from "@/app/components/food-card";
+
+// Lazy load popup component
+const FoodChangePopup = dynamic(() => import("@/app/components/food-change-popup"), {
+  ssr: false,
+});
 
 export default function Page() {
   const [bookings, setBookings] = useState<Booking[]>([]);

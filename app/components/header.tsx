@@ -24,12 +24,12 @@ const route = (
 };
 
 const NAVIGATION_ROUTES: { [key: string]: NavigationRoute } = {
-  "Столики": route("/"),
-  "Бронирования": route("/bookings"),
-  "Отзывы": route("/review"),
-  "Пользователи": route("/users", false, true),
-  "Заказы": route("/waiters", true, true),
-  "События": route("/events"),
+  Столики: route("/"),
+  Бронирования: route("/bookings"),
+  Отзывы: route("/review"),
+  Пользователи: route("/users", false, true),
+  Заказы: route("/waiters", true, true),
+  События: route("/events"),
 };
 
 export default function Header() {
@@ -44,11 +44,11 @@ export default function Header() {
 
   return (
     <header className="header">
-      <a href="/" style={{ marginRight: "auto" }}>
+      <Link href="/" style={{ marginRight: "auto" }}>
         <h1>
           <Logo />
         </h1>
-      </a>
+      </Link>
       {Object.keys(NAVIGATION_ROUTES)
         .filter(
           (e) =>
@@ -123,7 +123,7 @@ export default function Header() {
               resolve = res;
             });
 
-            authService.updateUser(user, resolve).then((newUser) => {
+            authService.updateUser(user, resolve).then((_newUser) => {
               useUserStore.getState().Login(user, useUserStore.getState().token!);
             });
 
