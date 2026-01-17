@@ -110,4 +110,7 @@ const FoodChangePopup = forwardRef<HTMLDialogElement, FoodChangePopupProps>(
     );
   }
 );
+
+FoodChangePopup.displayName = "FoodChangePopup";
+
 export default FoodChangePopup;

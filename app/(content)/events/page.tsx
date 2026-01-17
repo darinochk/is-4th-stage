@@ -1,5 +1,5 @@
 "use client";
-import EventChangePopup from "@/app/components/event-change-popup";
+import dynamic from "next/dynamic";
 import { ApiMessage } from "@/app/services/http";
 import { CoffeeEvent, Promotion } from "@/app/services/api";
 import { eventService } from "@/app/services/api";
@@ -9,6 +9,11 @@ import { useAuthEffect } from "@/app/hooks/use-auth-effect";
 import Spinner from "@/app/components/spinner";
 import MessageComponent from "@/app/components/message";
 import { useUserStore } from "@/context/user-store";
+
+// Lazy load popup component
+const EventChangePopup = dynamic(() => import("@/app/components/event-change-popup"), {
+  ssr: false,
+});
 
 export default function Page() {
   const [events, setEvents] = useState<(CoffeeEvent & { event?: boolean })[]>([]);
