@@ -2,14 +2,15 @@
 import styles from "./page.module.css";
 import MessageComponent from "@/app/components/message";
 import Spinner from "@/app/components/spinner";
-import { FocusEventHandler, useEffect, useState } from "react";
-import { Message } from "@/api/api";
-import { CreateReview, GetReviews, ModerateReview, Review } from "@/api/review";
+import { FocusEventHandler, useState } from "react";
+import { ApiMessage } from "@/app/services/http";
+import { Review } from "@/app/services/api";
+import { reviewService } from "@/app/services/api";
 import { useUserStore } from "@/context/user-store";
 import edit from "@/public/edit.svg";
 import save from "@/public/save.svg";
 import no_photo from "@/public/no_photo.png";
-import { useAuthEffect } from "@/api/auth";
+import { useAuthEffect } from "@/app/hooks/use-auth-effect";
 
 const DATE_FORMATTER = new Intl.DateTimeFormat("ru-RU", {
   year: "numeric",
@@ -23,11 +24,11 @@ export default function Page() {
   const [writing, setWriting] = useState(false);
   const [closingTimeout, setClosingTimeout] = useState<NodeJS.Timeout>(setTimeout(() => {}, 0));
 
-  const [response, setResponse] = useState<Message | null>(null);
-  const [requestSent, setRequestSent] = useState<boolean>(false);
+  const [response, setResponse] = useState<ApiMessage | null>(null);
+  const [requestSent] = useState<boolean>(false);
 
   useAuthEffect(() => {
-    GetReviews().then(setReviews);
+    reviewService.getReviews().then(setReviews);
   }, []);
 
   const handleBlur: FocusEventHandler<HTMLInputElement> = (e) => {
@@ -48,7 +49,7 @@ export default function Page() {
           e.preventDefault();
           const formData = new FormData(e.currentTarget);
           const form = e.currentTarget;
-          CreateReview(Object.fromEntries(formData), setResponse).then((post) => {
+          reviewService.createReview(Object.fromEntries(formData), setResponse).then((post) => {
             if (post) {
               setReviews([...reviews, post]);
               form.reset();
@@ -162,7 +163,7 @@ function ReviewCard({ review }: { review: Review }) {
           onClick={() => {
             setEditing(!editing);
             if (editing) {
-              ModerateReview(review.id, editedReview.reviewText).then((review) => {
+              reviewService.moderateReview(review.id, editedReview.reviewText).then((review) => {
                 if (review) setEditedReview(review);
               });
             }

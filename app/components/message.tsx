@@ -1,8 +1,8 @@
 import React from "react";
-import { Message } from "@/api/api";
+import { ApiMessage } from "@/app/services/http";
 
 export interface MessageComponentProps {
-  message: Message | null;
+  message: ApiMessage | null;
   style?: React.CSSProperties;
   className?: string;
   onlyError?: boolean;

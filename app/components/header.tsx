@@ -5,9 +5,9 @@ import { usePathname, useRouter } from "next/navigation";
 import { useUserStore } from "@/context/user-store";
 import Logo from "@/app/components/logo";
 import { useRef, useState } from "react";
-import { Message } from "@/api/api";
+import { ApiMessage } from "@/app/services/http";
 import UserChangePopup from "@/app/components/user-change-popup";
-import { DeleteUser, UpdateUser } from "@/api/auth";
+import { authService } from "@/app/services/api";
 
 interface NavigationRoute {
   path: string;
@@ -24,12 +24,12 @@ const route = (
 };
 
 const NAVIGATION_ROUTES: { [key: string]: NavigationRoute } = {
-  Столики: route("/"),
-  Бронирования: route("/bookings"),
-  Отзывы: route("/review"),
-  Пользователи: route("/users", false, true),
-  Заказы: route("/waiters", true, true),
-  События: route("/events"),
+  "Столики": route("/"),
+  "Бронирования": route("/bookings"),
+  "Отзывы": route("/review"),
+  "Пользователи": route("/users", false, true),
+  "Заказы": route("/waiters", true, true),
+  "События": route("/events"),
 };
 
 export default function Header() {
@@ -84,7 +84,7 @@ export default function Header() {
             </button>
             <button
               onClick={() => {
-                DeleteUser().then(() => {
+                authService.deleteUser().then(() => {
                   useUserStore.getState().Logout();
                   router.push("/login");
                 });
@@ -118,12 +118,12 @@ export default function Header() {
           ref={dialogRef}
           user={user}
           setUser={(user) => {
-            let resolve: (mess: Message) => void = () => {};
-            const setMessage = new Promise((res: (mess: Message) => void) => {
+            let resolve: (mess: ApiMessage) => void = () => {};
+            const setMessage = new Promise((res: (mess: ApiMessage) => void) => {
               resolve = res;
             });
 
-            UpdateUser(user, resolve).then((newUser) => {
+            authService.updateUser(user, resolve).then((newUser) => {
               useUserStore.getState().Login(user, useUserStore.getState().token!);
             });
 

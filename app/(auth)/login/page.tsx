@@ -2,16 +2,16 @@
 import Spinner from "@/app/components/spinner";
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
-import { Login } from "@/api/auth";
+import { authService } from "@/app/services/api";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/context/user-store";
 import MessageComponent from "@/app/components/message";
-import { Message } from "@/api/api";
+import { ApiMessage } from "@/app/services/http";
 import Logo from "@/app/components/logo";
 
 export default function LoginPage() {
-  const [response, setResponse] = useState<Message | null>(null);
+  const [response, setResponse] = useState<ApiMessage | null>(null);
   const [requestSent, setRequestSent] = useState<boolean>(false);
   const router = useRouter();
   const user = useUserStore((state) => state);
@@ -34,7 +34,11 @@ export default function LoginPage() {
 
           setResponse(null);
           setRequestSent(true);
-          Login(formData.get("email") as string, formData.get("password") as string, setResponse);
+          authService.login(
+            formData.get("email") as string,
+            formData.get("password") as string,
+            setResponse
+          );
         }}
       >
         <label>

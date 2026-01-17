@@ -1,10 +1,10 @@
 import { forwardRef, useImperativeHandle, useRef, useState } from "react";
-import { Message } from "@/api/api";
+import { ApiMessage } from "@/app/services/http";
 import MessageComponent from "@/app/components/message";
 import Spinner from "@/app/components/spinner";
-import { Food, GetFood } from "@/api/food";
-import { useAuthEffect } from "@/api/auth";
-import { AddFoodToOrder, Order } from "@/api/order";
+import { Food, Order } from "@/app/services/api";
+import { useAuthEffect } from "@/app/hooks/use-auth-effect";
+import { foodService, orderService } from "@/app/services/api";
 import styles from "./food-order-popup.module.css";
 
 export default forwardRef(function FoodOrderPopup(
@@ -20,12 +20,12 @@ export default forwardRef(function FoodOrderPopup(
   const dialogRef = useRef<HTMLDialogElement>(null);
   useImperativeHandle(ref, () => dialogRef.current!);
 
-  const [response, setResponse] = useState<Message | null>(null);
+  const [response, setResponse] = useState<ApiMessage | null>(null);
   const [requestSent, setRequestSent] = useState<boolean>(false);
   const [food, setFood] = useState<Food[]>([]);
 
   useAuthEffect(() => {
-    GetFood().then(setFood);
+    foodService.getFood().then(setFood);
   }, []);
 
   return (
@@ -38,8 +38,9 @@ export default forwardRef(function FoodOrderPopup(
           setRequestSent(true);
           setResponse(null);
           const form = e.currentTarget;
-          AddFoodToOrder(Object.fromEntries(new FormData(e.currentTarget)), setResponse).then(
-            (resp) => {
+          orderService
+            .addFoodToOrder(Object.fromEntries(new FormData(e.currentTarget)), setResponse)
+            .then((resp) => {
               if (resp) {
                 onOrder(resp);
                 form.reset();
@@ -47,8 +48,7 @@ export default forwardRef(function FoodOrderPopup(
                 setResponse(null);
               }
               setRequestSent(false);
-            }
-          );
+            });
         }}
       >
         <h3 className={styles.title}>Добавление еды</h3>

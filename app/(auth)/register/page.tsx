@@ -2,7 +2,7 @@
 import Spinner from "@/app/components/spinner";
 import { useEffect, useState } from "react";
 import styles from "./../login/page.module.css";
-import { Register } from "@/api/auth";
+import { authService } from "@/app/services/api";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/context/user-store";
@@ -12,12 +12,12 @@ import {
   PasswordValidator,
   PhoneValidator,
 } from "@/app/(auth)/login/validators";
-import { Message } from "@/api/api";
+import { ApiMessage } from "@/app/services/http";
 import MessageComponent from "@/app/components/message";
 import Logo from "@/app/components/logo";
 
 export default function RegisterPage() {
-  const [response, setResponse] = useState<Message | null>(null);
+  const [response, setResponse] = useState<ApiMessage | null>(null);
   const [requestSent, setRequestSent] = useState<boolean>(false);
   const router = useRouter();
   const user = useUserStore((state) => state);
@@ -40,7 +40,7 @@ export default function RegisterPage() {
 
           setResponse(null);
           setRequestSent(true);
-          Register(Object.fromEntries(formData), setResponse);
+          authService.register(Object.fromEntries(formData), setResponse);
         }}
       >
         <label>

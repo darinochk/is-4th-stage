@@ -1,4 +1,4 @@
-import { Message } from "@/api/api";
+import { ApiMessage } from "@/app/services/http";
 import { EmailValidator, NameValidator, PhoneValidator } from "@/app/(auth)/login/validators";
 import { IntUser } from "@/context/user-store";
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
@@ -12,7 +12,7 @@ export default forwardRef(function UserChangePopup(
     setUser,
   }: {
     user: IntUser;
-    setUser: (user: IntUser) => Promise<Message>;
+    setUser: (user: IntUser) => Promise<ApiMessage>;
   },
   ref: React.Ref<HTMLDialogElement | null>
 ) {
@@ -20,7 +20,7 @@ export default forwardRef(function UserChangePopup(
   useImperativeHandle(ref, () => dialogRef.current!);
 
   const [userInternal, setUserInternal] = useState(user);
-  const [response, setResponse] = useState<Message | null>(null);
+  const [response, setResponse] = useState<ApiMessage | null>(null);
   const [requestSent, setRequestSent] = useState<boolean>(false);
 
   useEffect(() => {
